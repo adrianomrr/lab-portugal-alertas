@@ -1,0 +1,421 @@
+<!DOCTYPE html>
+<html lang="pt" data-theme="light">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>Portugal Alertas — IPMA</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300..700&family=Instrument+Serif:ital@0;1&display=swap" rel="stylesheet">
+  <style>
+    :root, [data-theme="light"] {
+      --color-bg: #f7f6f2; --color-surface: #f9f8f5; --color-surface-2: #fbfbf9;
+      --color-surface-offset: #f0ede8; --color-divider: #dcd9d5;
+      --color-border: oklch(0.2 0.01 80 / 0.12);
+      --color-text: #28251d; --color-text-muted: #7a7974; --color-text-faint: #bab9b4;
+      --color-primary: #01696f; --color-primary-hover: #0c4e54;
+      --color-primary-highlight: #cedcd8;
+      --color-success: #437a22; --color-orange: #da7101; --color-red: #c0392b;
+      --shadow-sm: 0 1px 2px oklch(0.2 0.01 80 / 0.06);
+      --shadow-md: 0 4px 12px oklch(0.2 0.01 80 / 0.08);
+      --radius-sm:.375rem;--radius-md:.5rem;--radius-lg:.75rem;--radius-xl:1rem;--radius-full:9999px;
+      --font-display:'Instrument Serif',Georgia,serif; --font-body:'Inter',sans-serif;
+      --text-xs:clamp(0.75rem,.7rem + .25vw,.875rem); --text-sm:clamp(.875rem,.8rem + .35vw,1rem);
+      --text-base:clamp(1rem,.95rem + .25vw,1.125rem); --text-lg:clamp(1.125rem,1rem + .75vw,1.5rem);
+      --text-xl:clamp(1.5rem,1.2rem + 1.25vw,2.25rem);
+      --space-1:.25rem;--space-2:.5rem;--space-3:.75rem;--space-4:1rem;
+      --space-5:1.25rem;--space-6:1.5rem;--space-8:2rem;--space-10:2.5rem;--space-12:3rem;
+      --transition:180ms cubic-bezier(0.16,1,0.3,1);
+    }
+    [data-theme="dark"] {
+      --color-bg:#171614;--color-surface:#1c1b19;--color-surface-2:#201f1d;
+      --color-surface-offset:#22211f;--color-divider:#262523;
+      --color-border:oklch(1 0 0 / 0.08);
+      --color-text:#cdccca;--color-text-muted:#797876;--color-text-faint:#5a5957;
+      --color-primary:#4f98a3;--color-primary-hover:#227f8b;--color-primary-highlight:#313b3b;
+      --color-success:#6daa45;--color-orange:#fdab43;--color-red:#e74c3c;
+      --shadow-sm:0 1px 2px oklch(0 0 0/.2);--shadow-md:0 4px 12px oklch(0 0 0/.3);
+    }
+    @media(prefers-color-scheme:dark){:root:not([data-theme]){
+      --color-bg:#171614;--color-surface:#1c1b19;--color-surface-offset:#22211f;
+      --color-divider:#262523;--color-border:oklch(1 0 0/.08);
+      --color-text:#cdccca;--color-text-muted:#797876;--color-text-faint:#5a5957;
+      --color-primary:#4f98a3;--color-orange:#fdab43;--color-red:#e74c3c;
+    }}
+
+    *,*::before,*::after{box-sizing:border-box;margin:0;padding:0}
+    html{-webkit-font-smoothing:antialiased;scroll-behavior:smooth}
+    body{min-height:100dvh;font-family:var(--font-body);font-size:var(--text-base);color:var(--color-text);background:var(--color-bg);line-height:1.6}
+    button{cursor:pointer;background:none;border:none;font:inherit;color:inherit}
+    a,button{transition:color var(--transition),background var(--transition),box-shadow var(--transition)}
+    :focus-visible{outline:2px solid var(--color-primary);outline-offset:3px;border-radius:var(--radius-sm)}
+
+    /* Header */
+    header{position:sticky;top:0;z-index:100;background:color-mix(in oklch,var(--color-bg) 92%,transparent);backdrop-filter:blur(12px);border-bottom:1px solid var(--color-border);padding:var(--space-4) var(--space-6)}
+    .header-inner{max-width:1100px;margin:0 auto;display:flex;align-items:center;justify-content:space-between;gap:var(--space-4)}
+    .logo{display:flex;align-items:center;gap:var(--space-3);text-decoration:none;color:var(--color-text)}
+    .logo-icon{width:34px;height:34px;flex-shrink:0}
+    .logo-name{font-family:var(--font-display);font-size:var(--text-lg);line-height:1.1}
+    .logo-tag{font-size:var(--text-xs);color:var(--color-text-muted);font-style:italic}
+    .header-actions{display:flex;align-items:center;gap:var(--space-3)}
+    .theme-btn{width:36px;height:36px;border-radius:var(--radius-full);display:flex;align-items:center;justify-content:center;color:var(--color-text-muted);border:1px solid var(--color-border)}
+    .theme-btn:hover{background:var(--color-surface-offset);color:var(--color-text)}
+    .refresh-btn{display:flex;align-items:center;gap:var(--space-2);padding:var(--space-2) var(--space-4);border-radius:var(--radius-full);background:var(--color-primary);color:white;font-size:var(--text-sm);font-weight:500}
+    .refresh-btn:hover{background:var(--color-primary-hover)}
+    .refresh-btn.loading svg{animation:spin 1s linear infinite}
+    @keyframes spin{to{transform:rotate(360deg)}}
+
+    /* Tabs */
+    .tabs-wrapper{max-width:1100px;margin:0 auto;padding:var(--space-6) var(--space-6) 0}
+    .tabs-nav{display:flex;gap:var(--space-2);border-bottom:2px solid var(--color-divider);margin-bottom:var(--space-8);overflow-x:auto;-webkit-overflow-scrolling:touch;scrollbar-width:none}
+    .tabs-nav::-webkit-scrollbar{display:none}
+    .tab-btn{display:flex;align-items:center;gap:var(--space-2);padding:var(--space-3) var(--space-5);font-size:var(--text-sm);font-weight:500;color:var(--color-text-muted);border-bottom:2px solid transparent;margin-bottom:-2px;border-radius:var(--radius-md) var(--radius-md) 0 0;white-space:nowrap;transition:color var(--transition),background var(--transition),border-color var(--transition)}
+    .tab-btn:hover{color:var(--color-text);background:var(--color-surface-offset)}
+    .tab-btn.active{color:var(--color-primary);border-bottom-color:var(--color-primary);background:color-mix(in oklch,var(--color-primary) 6%,var(--color-surface))}
+    .tab-badge{background:var(--color-surface-offset);color:var(--color-text-muted);font-size:11px;font-weight:700;padding:1px 7px;border-radius:var(--radius-full);min-width:20px;text-align:center}
+    .tab-btn.active .tab-badge{background:var(--color-primary-highlight);color:var(--color-primary)}
+    .tab-badge.alert{background:color-mix(in oklch,var(--color-red) 15%,var(--color-surface-offset));color:var(--color-red)}
+
+    .tab-panel{display:none}
+    .tab-panel.active{display:block}
+
+    main{max-width:1100px;margin:0 auto;padding:0 var(--space-6) var(--space-12)}
+
+    /* Section header */
+    .section-header{margin-bottom:var(--space-6)}
+    .section-title{font-family:var(--font-display);font-size:var(--text-xl);margin-bottom:var(--space-1)}
+    .section-desc{font-size:var(--text-sm);color:var(--color-text-muted)}
+
+    /* City selector */
+    .city-row{display:flex;gap:var(--space-3);margin-bottom:var(--space-6);flex-wrap:wrap;align-items:center}
+    .city-label{font-size:var(--text-sm);color:var(--color-text-muted);font-weight:500}
+    .city-select{flex:1;min-width:180px;max-width:280px;padding:var(--space-3) var(--space-4);border-radius:var(--radius-lg);border:1px solid var(--color-border);background:var(--color-surface);color:var(--color-text);font-size:var(--text-sm);font-family:var(--font-body)}
+
+    /* Forecast */
+    .forecast-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(min(155px,100%),1fr));gap:var(--space-4)}
+    .forecast-card{background:var(--color-surface);border:1px solid var(--color-border);border-radius:var(--radius-xl);padding:var(--space-5);text-align:center;box-shadow:var(--shadow-sm);transition:box-shadow var(--transition),transform var(--transition)}
+    .forecast-card:hover{box-shadow:var(--shadow-md);transform:translateY(-2px)}
+    .forecast-card.today{background:color-mix(in oklch,var(--color-primary) 8%,var(--color-surface));border-color:color-mix(in oklch,var(--color-primary) 30%,var(--color-border))}
+    .fc-date{font-size:var(--text-xs);color:var(--color-text-muted);margin-bottom:var(--space-2);text-transform:uppercase;letter-spacing:.06em}
+    .fc-today-label{font-size:var(--text-xs);font-weight:700;color:var(--color-primary);text-transform:uppercase;letter-spacing:.06em;margin-bottom:var(--space-1)}
+    .fc-icon{font-size:2.8rem;line-height:1;margin:var(--space-3) 0}
+    .fc-desc{font-size:var(--text-xs);color:var(--color-text-muted);margin-bottom:var(--space-3);min-height:2.4em}
+    .fc-temps{display:flex;justify-content:center;gap:var(--space-3);align-items:baseline}
+    .fc-max{font-weight:700;color:var(--color-orange);font-size:var(--text-lg)}
+    .fc-min{color:var(--color-text-muted);font-size:var(--text-sm)}
+    .fc-extra{font-size:var(--text-xs);color:var(--color-text-muted);margin-top:var(--space-2)}
+
+    /* Warnings */
+    .warnings-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(min(320px,100%),1fr));gap:var(--space-4)}
+    .warning-card{background:var(--color-surface);border:1px solid var(--color-border);border-radius:var(--radius-xl);padding:var(--space-5);box-shadow:var(--shadow-sm);display:flex;gap:var(--space-4);align-items:flex-start;transition:box-shadow var(--transition)}
+    .warning-card:hover{box-shadow:var(--shadow-md)}
+    .warning-dot{width:10px;height:10px;border-radius:50%;flex-shrink:0;margin-top:6px}
+    .warning-dot.green{background:var(--color-success)}
+    .warning-dot.yellow{background:#e8bf00}
+    .warning-dot.orange{background:var(--color-orange)}
+    .warning-dot.red{background:var(--color-red)}
+    .warning-body{flex:1}
+    .warning-type{font-weight:600;font-size:var(--text-sm)}
+    .warning-area{font-size:var(--text-sm);color:var(--color-text-muted);margin-top:var(--space-1)}
+    .warning-time{font-size:var(--text-xs);color:var(--color-text-faint);margin-top:var(--space-2)}
+    .warning-level{font-size:var(--text-xs);font-weight:700;letter-spacing:.05em;padding:var(--space-1) var(--space-3);border-radius:var(--radius-full);flex-shrink:0;text-transform:uppercase;align-self:flex-start}
+    .level-green{background:color-mix(in oklch,var(--color-success) 15%,var(--color-surface-offset));color:var(--color-success)}
+    .level-yellow{background:color-mix(in oklch,#e8bf00 15%,var(--color-surface-offset));color:#957d00}
+    .level-orange{background:color-mix(in oklch,var(--color-orange) 15%,var(--color-surface-offset));color:var(--color-orange)}
+    .level-red{background:color-mix(in oklch,var(--color-red) 15%,var(--color-surface-offset));color:var(--color-red)}
+    [data-theme="dark"] .level-yellow{color:#e8bf00}
+
+    /* Fire Risk */
+    .fire-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(min(220px,100%),1fr));gap:var(--space-3)}
+    .fire-card{background:var(--color-surface);border:1px solid var(--color-border);border-radius:var(--radius-lg);padding:var(--space-4);box-shadow:var(--shadow-sm);display:flex;align-items:center;gap:var(--space-3);transition:box-shadow var(--transition)}
+    .fire-card:hover{box-shadow:var(--shadow-md)}
+    .fire-bar{width:5px;border-radius:var(--radius-full);align-self:stretch;min-height:40px;flex-shrink:0}
+    .fire-l1{background:#4caf50}.fire-l2{background:#ffeb3b}.fire-l3{background:#ff9800}.fire-l4{background:#f44336}.fire-l5{background:#7b1fa2}
+    .fire-district{font-weight:600;font-size:var(--text-sm)}
+    .fire-sublabel{font-size:var(--text-xs);color:var(--color-text-muted);margin-top:2px}
+    .fire-badge{margin-left:auto;font-size:var(--text-xs);font-weight:700;padding:var(--space-1) var(--space-2);border-radius:var(--radius-sm);flex-shrink:0}
+    .fire-b1{background:#e8f5e9;color:#2e7d32}.fire-b2{background:#fffde7;color:#827717}.fire-b3{background:#fff3e0;color:#e65100}.fire-b4{background:#ffebee;color:#c62828}.fire-b5{background:#f3e5f5;color:#6a1b9a}
+    [data-theme="dark"] .fire-b1{background:#1b3a1b;color:#81c784}[data-theme="dark"] .fire-b2{background:#2a2500;color:#fff176}[data-theme="dark"] .fire-b3{background:#2a1800;color:#ffb74d}[data-theme="dark"] .fire-b4{background:#2a0a0a;color:#ef9a9a}[data-theme="dark"] .fire-b5{background:#1a0a2a;color:#ce93d8}
+
+    /* States */
+    .state-box{text-align:center;padding:var(--space-12) var(--space-8);color:var(--color-text-muted)}
+    .state-icon{font-size:2.5rem;margin-bottom:var(--space-4)}
+    .state-title{font-weight:600;margin-bottom:var(--space-2);font-size:var(--text-base)}
+    .state-msg{font-size:var(--text-sm);max-width:36ch;margin:0 auto}
+    @keyframes pulse{0%,100%{opacity:1}50%{opacity:.4}}
+
+    .last-update{font-size:var(--text-xs);color:var(--color-text-faint);text-align:right;margin-top:var(--space-4)}
+
+    footer{border-top:1px solid var(--color-divider);padding:var(--space-8) var(--space-6);text-align:center;font-size:var(--text-xs);color:var(--color-text-faint)}
+    footer a{color:var(--color-primary);text-decoration:none}
+
+    @media(max-width:600px){
+      header{padding:var(--space-3) var(--space-4)}
+      .tabs-wrapper{padding:var(--space-4) var(--space-4) 0}
+      main{padding:0 var(--space-4) var(--space-10)}
+      .logo-tag{display:none}
+      .tab-btn{padding:var(--space-3) var(--space-4)}
+    }
+  </style>
+</head>
+<body>
+
+<header>
+  <div class="header-inner">
+    <a href="#" class="logo">
+      <svg class="logo-icon" viewBox="0 0 34 34" fill="none" aria-label="Portugal Alertas">
+        <circle cx="17" cy="17" r="15" fill="currentColor" opacity="0.07"/>
+        <path d="M11 9 C7 12 6 19 9 23 C12 27 19 28 23 25 C27 22 28 16 25 12" stroke="#e65100" stroke-width="2" fill="none" stroke-linecap="round"/>
+        <circle cx="17" cy="17" r="3" fill="#01696f"/>
+        <path d="M17 8v3M17 23v3M8 17h3M23 17h3" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" opacity="0.35"/>
+      </svg>
+      <div>
+        <div class="logo-name">Portugal Alertas</div>
+        <div class="logo-tag">Dados IPMA em tempo real</div>
+      </div>
+    </a>
+    <div class="header-actions">
+      <button class="theme-btn" data-theme-toggle aria-label="Mudar tema">
+        <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="5"/><path d="M12 1v2M12 21v2M4.22 4.22l1.42 1.42M18.36 18.36l1.42 1.42M1 12h2M21 12h2M4.22 19.78l1.42-1.42M18.36 5.64l1.42-1.42"/></svg>
+      </button>
+      <button class="refresh-btn" id="refreshBtn" onclick="loadActiveTab(true)">
+        <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><path d="M3 12a9 9 0 0 1 9-9 9.75 9.75 0 0 1 6.74 2.74L21 8"/><path d="M21 3v5h-5"/><path d="M21 12a9 9 0 0 1-9 9 9.75 9.75 0 0 1-6.74-2.74L3 16"/><path d="M8 16H3v5"/></svg>
+        Atualizar
+      </button>
+    </div>
+  </div>
+</header>
+
+<div class="tabs-wrapper">
+  <nav class="tabs-nav" role="tablist">
+    <button class="tab-btn active" role="tab" aria-selected="true" onclick="switchTab('forecast',this)">
+      🌤️ Previsão <span class="tab-badge" id="badge-forecast">5 dias</span>
+    </button>
+    <button class="tab-btn" role="tab" aria-selected="false" onclick="switchTab('warnings',this)">
+      ⚠️ Avisos <span class="tab-badge" id="badge-warnings">—</span>
+    </button>
+    <button class="tab-btn" role="tab" aria-selected="false" onclick="switchTab('fire',this)">
+      🔥 Incêndios <span class="tab-badge" id="badge-fire">por distrito</span>
+    </button>
+  </nav>
+</div>
+
+<main>
+
+  <div id="panel-forecast" class="tab-panel active">
+    <div class="section-header">
+      <h2 class="section-title">🌤️ Previsão Meteorológica</h2>
+      <p class="section-desc">Próximos 5 dias por concelho</p>
+    </div>
+    <div class="city-row">
+      <span class="city-label">Concelho:</span>
+      <select class="city-select" id="citySelect" onchange="loadForecast()">
+        <option value="1110600">Lisboa</option>
+        <option value="1131200">Porto</option>
+        <option value="2310300">Faro</option>
+        <option value="1020500">Braga</option>
+        <option value="3450200">Coimbra</option>
+        <option value="2220300">Évora</option>
+        <option value="1141600">Setúbal</option>
+        <option value="1060300">Aveiro</option>
+        <option value="2550300">Beja</option>
+        <option value="1171400">Viana do Castelo</option>
+        <option value="1182300">Vila Real</option>
+        <option value="1070500">Bragança</option>
+        <option value="1151300">Viseu</option>
+        <option value="1030300">Castelo Branco</option>
+        <option value="1080500">Guarda</option>
+        <option value="1160900">Leiria</option>
+        <option value="2390500">Portalegre</option>
+        <option value="1091200">Santarém</option>
+      </select>
+    </div>
+    <div id="forecastGrid" class="forecast-grid">
+      <div class="state-box" style="grid-column:1/-1"><div class="state-icon" style="animation:pulse 1.5s infinite">⏳</div><div class="state-title">A carregar previsão...</div></div>
+    </div>
+    <p class="last-update" id="forecastUpdate"></p>
+  </div>
+
+  <div id="panel-warnings" class="tab-panel">
+    <div class="section-header">
+      <h2 class="section-title">⚠️ Avisos Meteorológicos</h2>
+      <p class="section-desc">Alertas ativos em Portugal Continental e Ilhas, ordenados por severidade</p>
+    </div>
+    <div id="warningsGrid" class="warnings-grid">
+      <div class="state-box" style="grid-column:1/-1"><div class="state-icon" style="animation:pulse 1.5s infinite">⏳</div><div class="state-title">A carregar avisos...</div></div>
+    </div>
+    <p class="last-update" id="warningsUpdate"></p>
+  </div>
+
+  <div id="panel-fire" class="tab-panel">
+    <div class="section-header">
+      <h2 class="section-title">🔥 Risco de Incêndio Rural</h2>
+      <p class="section-desc">Índice de perigo por distrito — dados IPMA de hoje</p>
+    </div>
+    <div id="fireGrid" class="fire-grid">
+      <div class="state-box" style="grid-column:1/-1"><div class="state-icon" style="animation:pulse 1.5s infinite">⏳</div><div class="state-title">A carregar risco de incêndio...</div></div>
+    </div>
+    <p class="last-update" id="fireUpdate"></p>
+  </div>
+
+</main>
+
+<footer>
+  Dados fornecidos por <a href="https://www.ipma.pt" target="_blank" rel="noopener">IPMA</a> —
+  Instituto Português do Mar e da Atmosfera · Atualização automática a cada 10 minutos
+</footer>
+
+<script>
+  // Theme Toggle
+  (function(){
+    const btn=document.querySelector('[data-theme-toggle]'),root=document.documentElement;
+    let theme=matchMedia('(prefers-color-scheme:dark)').matches?'dark':'light';
+    root.setAttribute('data-theme',theme);
+    const sun=`<svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="5"/><path d="M12 1v2M12 21v2M4.22 4.22l1.42 1.42M18.36 18.36l1.42 1.42M1 12h2M21 12h2M4.22 19.78l1.42-1.42M18.36 5.64l1.42-1.42"/></svg>`;
+    const moon=`<svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M21 12.79A9 9 0 1 1 11.21 3 7 7 0 0 0 21 12.79z"/></svg>`;
+    if(btn)btn.addEventListener('click',()=>{theme=theme==='dark'?'light':'dark';root.setAttribute('data-theme',theme);btn.innerHTML=theme==='dark'?sun:moon;});
+  })();
+
+  // Tabs
+  let activeTab='forecast';
+  const loaded={forecast:false,warnings:false,fire:false};
+  function switchTab(id,btn){
+    document.querySelectorAll('.tab-btn').forEach(b=>{b.classList.remove('active');b.setAttribute('aria-selected','false');});
+    document.querySelectorAll('.tab-panel').forEach(p=>p.classList.remove('active'));
+    btn.classList.add('active');btn.setAttribute('aria-selected','true');
+    document.getElementById('panel-'+id).classList.add('active');
+    activeTab=id;
+    if(!loaded[id]){
+      if(id==='forecast')loadForecast();
+      if(id==='warnings')loadWarnings();
+      if(id==='fire')loadFireRisk();
+    }
+  }
+  function loadActiveTab(force=false){
+    if(force)loaded[activeTab]=false;
+    if(activeTab==='forecast')loadForecast();
+    if(activeTab==='warnings')loadWarnings();
+    if(activeTab==='fire')loadFireRisk();
+  }
+
+  // Data Maps
+  const wIcons={1:'☀️',2:'🌤️',3:'⛅',4:'🌥️',5:'☁️',6:'🌦️',7:'🌧️',8:'⛈️',9:'⛈️',10:'🌩️',11:'🌨️',12:'❄️',13:'🌫️',14:'🌬️',15:'🌪️',16:'🌈',17:'🌫️',18:'🌡️',19:'🌦️',20:'🌧️',21:'⛈️',22:'❄️',23:'🌨️',24:'🌊',25:'🌩️',26:'🌦️',27:'🌧️',28:'🌬️',29:'🌫️',30:'🌤️'};
+  const wDesc={1:'Céu limpo',2:'Pouco nublado',3:'Parcialmente nublado',4:'Muito nublado',5:'Céu nublado',6:'Aguaceiros fracos',7:'Chuva fraca',8:'Aguaceiros',9:'Aguaceiros fortes',10:'Trovoada',11:'Aguaceiros e neve',12:'Neve',13:'Nevoeiro',14:'Vento forte',15:'Tempestade',16:'Céu limpo',17:'Nevoeiro denso',18:'Calor extremo',19:'Chuva',20:'Chuva forte',21:'Trovoada forte',22:'Neve fraca',23:'Neve forte',24:'Geada',25:'Tempestade elétrica',26:'Chuva e trovoada',27:'Aguaceiros e trovoada',28:'Vento muito forte',29:'Nevoeiro baixo',30:'Nublado alto'};
+  const warnTypes={'RCOSTA':'🌊 Agitação Marítima','VENTO':'💨 Vento','CHUVA':'🌧️ Precipitação','NEVE':'❄️ Neve','TROVOADA':'⛈️ Trovoada','NEVOEIRO':'🌫️ Nevoeiro','CALOR':'🌡️ Calor','FRIO':'🥶 Frio','GELO':'🧊 Gelo','SECA':'🏜️ Seca','GRANIZO':'🌨️ Granizo','BIO':'🌿 Biológico'};
+  const fireLabels=['','Reduzido','Moderado','Elevado','Muito Elevado','Máximo'];
+  const districts={'01':'Viana do Castelo','02':'Braga','03':'Vila Real','04':'Bragança','05':'Viseu','06':'Guarda','07':'Coimbra','08':'Leiria','09':'Aveiro','10':'Porto','11':'Lisboa','12':'Setúbal','13':'Évora','14':'Beja','15':'Faro','16':'Castelo Branco','17':'Santarém','18':'Portalegre','20':'Açores','30':'Madeira'};
+
+  // Forecast
+  async function loadForecast(){
+    const cityId=document.getElementById('citySelect').value;
+    const grid=document.getElementById('forecastGrid');
+    grid.innerHTML='<div class="state-box" style="grid-column:1/-1"><div class="state-icon" style="animation:pulse 1.5s infinite">⏳</div><div class="state-title">A carregar...</div></div>';
+    try{
+      const r=await fetch(`https://api.ipma.pt/open-data/forecast/meteorology/cities/daily/${cityId}.json`);
+      if(!r.ok)throw new Error('HTTP '+r.status);
+      const data=await r.json();
+      const today=new Date().toISOString().split('T')[0];
+      const days=(data.data||[]).slice(0,5);
+      if(!days.length)throw new Error('Sem dados');
+      grid.innerHTML=days.map(d=>{
+        const isToday=d.forecastDate===today;
+        const date=new Date(d.forecastDate+'T12:00:00');
+        const dayLabel=isToday?'Hoje':date.toLocaleDateString('pt-PT',{weekday:'short',day:'numeric',month:'short'});
+        const icon=wIcons[d.idWeatherType]||'🌡️';
+        const desc=wDesc[d.idWeatherType]||'';
+        const rain=d.precipitaProb?`🌧️ ${Math.round(d.precipitaProb)}%`:'';
+        const wind=d.classWindSpeed?['','🍃 Fraco','💨 Moderado','🌬️ Forte'][d.classWindSpeed]||'':'';
+        return `<div class="forecast-card ${isToday?'today':''}">
+          ${isToday?'<div class="fc-today-label">Hoje</div>':`<div class="fc-date">${dayLabel}</div>`}
+          <div class="fc-icon">${icon}</div>
+          <div class="fc-desc">${desc}</div>
+          <div class="fc-temps"><span class="fc-max">${d.tMax??'--'}°</span><span class="fc-min">${d.tMin??'--'}°</span></div>
+          ${rain||wind?`<div class="fc-extra">${[rain,wind].filter(Boolean).join(' · ')}</div>`:''}
+        </div>`;
+      }).join('');
+      loaded.forecast=true;
+      document.getElementById('forecastUpdate').textContent=`Atualizado: ${new Date().toLocaleTimeString('pt-PT')}`;
+    }catch(e){
+      grid.innerHTML=`<div class="state-box" style="grid-column:1/-1"><div class="state-icon">❌</div><div class="state-title">Erro ao carregar</div><div class="state-msg">${e.message}</div></div>`;
+    }
+  }
+
+  // Warnings
+  async function loadWarnings(){
+    const grid=document.getElementById('warningsGrid');
+    try{
+      const r=await fetch('https://api.ipma.pt/open-data/forecast/warnings/warnings_www.json');
+      if(!r.ok)throw new Error('HTTP '+r.status);
+      const data=await r.json();
+      const now=new Date();
+      const active=data.filter(w=>w.endTime&&new Date(w.endTime)>now);
+      const order={red:0,orange:1,yellow:2,green:3};
+      active.sort((a,b)=>(order[a.awarenessLevelID]??4)-(order[b.awarenessLevelID]??4));
+      const badge=document.getElementById('badge-warnings');
+      badge.textContent=active.length;
+      if(active.some(w=>w.awarenessLevelID==='red'||w.awarenessLevelID==='orange'))badge.classList.add('alert');
+      if(!active.length){
+        grid.innerHTML=`<div class="state-box" style="grid-column:1/-1"><div class="state-icon">✅</div><div class="state-title">Sem avisos ativos</div><div class="state-msg">Não existem avisos meteorológicos de momento.</div></div>`;
+        loaded.warnings=true;return;
+      }
+      grid.innerHTML=active.map(w=>{
+        const level=w.awarenessLevelID||'green';
+        const type=warnTypes[w.awarenessTypeName]||('⚠️ '+(w.awarenessTypeName||'Aviso'));
+        const area=w.idAreaAviso||w.area||'';
+        const start=w.startTime?new Date(w.startTime).toLocaleString('pt-PT',{day:'2-digit',month:'2-digit',hour:'2-digit',minute:'2-digit'}):'';
+        const end=w.endTime?new Date(w.endTime).toLocaleString('pt-PT',{day:'2-digit',month:'2-digit',hour:'2-digit',minute:'2-digit'}):'';
+        const lbl={green:'Verde',yellow:'Amarelo',orange:'Laranja',red:'Vermelho'}[level]||level;
+        return `<div class="warning-card">
+          <div class="warning-dot ${level}"></div>
+          <div class="warning-body">
+            <div class="warning-type">${type}</div>
+            <div class="warning-area">📍 ${area}</div>
+            ${start||end?`<div class="warning-time">${start} → ${end}</div>`:''}
+          </div>
+          <span class="warning-level level-${level}">${lbl}</span>
+        </div>`;
+      }).join('');
+      loaded.warnings=true;
+      document.getElementById('warningsUpdate').textContent=`Atualizado: ${new Date().toLocaleTimeString('pt-PT')}`;
+    }catch(e){
+      grid.innerHTML=`<div class="state-box" style="grid-column:1/-1"><div class="state-icon">❌</div><div class="state-title">Erro ao carregar avisos</div><div class="state-msg">${e.message}</div></div>`;
+    }
+  }
+
+  // Fire Risk
+  async function loadFireRisk(){
+    const grid=document.getElementById('fireGrid');
+    try{
+      const r=await fetch('https://api.ipma.pt/open-data/forecast/fires/forecast-fire-risk-total.json');
+      if(!r.ok)throw new Error('HTTP '+r.status);
+      const data=await r.json();
+      const today=(data.data||[])[0];
+      if(!today||!today.data)throw new Error('Sem dados');
+      const entries=today.data.map(d=>({
+        district:districts[String(d.globalIdLocal).padStart(2,'0')]||('Distrito '+d.globalIdLocal),
+        risk:d.data&&d.data[0]?d.data[0].rcm:null
+      })).filter(d=>d.risk!==null);
+      entries.sort((a,b)=>b.risk-a.risk);
+      if(!entries.length)throw new Error('Sem dados disponíveis');
+      grid.innerHTML=entries.map(d=>{
+        const lvl=Math.min(5,Math.max(1,Math.round(d.risk)));
+        return `<div class="fire-card">
+          <div class="fire-bar fire-l${lvl}"></div>
+          <div style="flex:1"><div class="fire-district">${d.district}</div><div class="fire-sublabel">${fireLabels[lvl]||'N/D'}</div></div>
+          <span class="fire-badge fire-b${lvl}">${lvl}/5</span>
+        </div>`;
+      }).join('');
+      loaded.fire=true;
+      document.getElementById('fireUpdate').textContent=`Atualizado: ${new Date().toLocaleTimeString('pt-PT')} · Fonte: IPMA`;
+    }catch(e){
+      grid.innerHTML=`<div class="state-box" style="grid-column:1/-1"><div class="state-icon">🔥</div><div class="state-title">Dados indisponíveis</div><div class="state-msg">Fora da época de incêndios ou temporariamente indisponível.</div></div>`;
+    }
+  }
+
+  // Init
+  loadForecast();
+  loadWarnings(); // carrega em background para o badge
+  setInterval(()=>{loaded[activeTab]=false;loadActiveTab();},10*60*1000);
+</script>
+</body>
+</html>
